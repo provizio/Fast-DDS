@@ -1948,7 +1948,7 @@ TEST(LivelinessTests, Detect_Deadlock_ManualByParticipant_Intraprocess)
 }
 
 // Regression test of Refs #20584, github issue #4373
-TEST(LivelinessTests, Reader_Successfully_Asserts_Liveliness_on_a_Disconnected_Writer)
+TEST_P(LivelinessQos, Reader_Successfully_Asserts_Liveliness_on_a_Disconnected_Writer)
 {
     // Create a test_transport to simulate a network shutdown (Ctrl+C)
     auto test_transport = std::make_shared<eprosima::fastdds::rtps::test_UDPv4TransportDescriptor>();
@@ -1998,7 +1998,7 @@ TEST(LivelinessTests, Reader_Successfully_Asserts_Liveliness_on_a_Disconnected_W
 }
 
 // Regression test of Refs #21065, github issue #4610
-TEST(LivelinessTests, correct_liveliness_state_one_writer_multiple_readers)
+TEST_P(LivelinessQos, correct_liveliness_state_one_writer_multiple_readers)
 {
     uint8_t num_readers = 2;
 
