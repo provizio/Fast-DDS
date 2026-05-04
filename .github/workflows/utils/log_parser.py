@@ -155,15 +155,21 @@ _UBSAN_LINE_RE = re.compile(
     r'(?P<path>\S+?):(?P<line>\d+):(?P<col>\d+):\s*runtime error:\s*(?P<desc>.+?)\s*$'
 )
 
+# Hex addresses ("0x55ade3179480") differ across runs but represent the same logical UB;
+# normalize them to "0x..." so identical findings at the same site collapse into one row.
+_HEX_ADDRESS_RE = re.compile(r'0x[0-9a-fA-F]+')
+
 
 def ubsan_line_splitter(
         line: str):
     match = _UBSAN_LINE_RE.search(line.rstrip('\r\n'))
     if not match:
-        return line.strip()
+        # Group every unparseable input under one bucket instead of polluting the table
+        # with stub rows like "<test-id>:" produced by partial/truncated log lines.
+        return '<unparsed UBSan report>' if not line.strip() else line.strip()
     basename = match.group('path').rsplit('/', 1)[-1]
-    return (f"{basename}:{match.group('line')}:{match.group('col')}: "
-            f"{match.group('desc')}")
+    desc = _HEX_ADDRESS_RE.sub('0x...', match.group('desc'))
+    return f"{basename}:{match.group('line')}:{match.group('col')}: {desc}"
 
 
 def common_specific_errors_list(
