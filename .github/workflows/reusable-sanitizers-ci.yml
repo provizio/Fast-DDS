@@ -632,6 +632,11 @@ jobs:
             log/latest_test/fastdds/stdout_stderr.log \
             _tmp_specific_error_file.log
 
+          # Print temporary file content for debugging purposes
+          echo "Content of _tmp_specific_error_file.log:"
+          cat _tmp_specific_error_file.log
+          echo "End of _tmp_specific_error_file.log"
+
           python3 src/fastdds/.github/workflows/utils/log_parser.py \
             --log-file log/latest_test/fastdds/stdout_stderr.log \
             --specific-error-file _tmp_specific_error_file.log \
